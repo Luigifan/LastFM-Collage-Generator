@@ -12,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.json.JSONObject;
-import org.musicbrainz.MBWS2Exception;
 
 public class MusicBrainzTest 
 {
@@ -21,7 +20,7 @@ public class MusicBrainzTest
 	{
 	return null;	
 	}
-	public static void main(String[] args) throws MBWS2Exception 
+	public static void main(String[] args) 
 	{
 		String request = URLEncoder.encode("Dingir Rings of Saturn");
 		try{

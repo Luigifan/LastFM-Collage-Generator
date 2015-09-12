@@ -41,7 +41,8 @@ public class CollageGenerator implements Runnable
 	
 	private BufferedImage GetImageFromGoogle(String query)
 	{
-		String request = URLEncoder.encode(query);
+		String stripped = query.replaceAll("[\\-\\+\\.\\^:,\\]\\[]", "");
+		String request = URLEncoder.encode(stripped.toLowerCase());
 		try{
             URL url = new URL("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + request);
             URLConnection connection = url.openConnection();
@@ -54,12 +55,11 @@ public class CollageGenerator implements Runnable
             }
 
             JSONObject json = new JSONObject(builder.toString());
-            String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("url");
-
-            BufferedImage image = ImageIO.read(new URL(imageUrl));
-            return image;
+            	String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("url");
+            	BufferedImage image = ImageIO.read(new URL(imageUrl));
+            	return image;
         } catch(Exception e){
-        	System.err.println("---ERROR GETTING FOR QUERY: " + query);
+        	System.err.println("---ERROR GETTING FOR QUERY: " + stripped.toLowerCase());
             e.printStackTrace();
         }
 		return null;

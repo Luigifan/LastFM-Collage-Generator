@@ -125,24 +125,10 @@ public class MainWindow extends JFrame {
 		while(g.isRunning());
 		if(g.getResultingCollage() != null)
 		{
-		JFileChooser jfc = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG Images", "png");
-		jfc.setFileFilter(filter);
-		if(jfc.showSaveDialog(this) == 0)
-		{
-			try
-			{
-				if(!jfc.getSelectedFile().getAbsolutePath().contains(".png"))
-					jfc.setSelectedFile(new File(jfc.getSelectedFile().getAbsoluteFile() + ".png"));
-				ImageIO.write(g.getResultingCollage(), "png", jfc.getSelectedFile());
-				JOptionPane.showMessageDialog(this, "Saved to '" + jfc.getSelectedFile().getAbsolutePath() + "' successfully!");
-			}
-			catch(IOException e)
-			{
-				JOptionPane.showMessageDialog(this, "Error saving: \n" + e.getStackTrace());
-				e.printStackTrace();
-			}
-		}
+			CollagePreview p = new CollagePreview();
+			p.setAlwaysOnTop(true);
+			p.setVisible(true);
+			p.setPreviewImage(g.getResultingCollage());
 		}
 		enableComponents(this.getContentPane(), true);
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
