@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 import de.umass.lastfm.Album;
+import de.umass.lastfm.Caller;
 import de.umass.lastfm.Chart;
 import de.umass.lastfm.User;
 
@@ -67,6 +68,7 @@ public class CollageGenerator implements Runnable
 	
 	private BufferedImage CreateCollage()
 	{
+		Caller.getInstance().setCache(null); //should make sure nothing is persisted to avoid weird things happening
 		try
 		{
 		switch(Options.getSize())
