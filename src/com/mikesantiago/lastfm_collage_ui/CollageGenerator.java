@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -69,8 +70,6 @@ public class CollageGenerator implements Runnable
 	private BufferedImage CreateCollage()
 	{
 		Caller.getInstance().setCache(null); //should make sure nothing is persisted to avoid weird things happening
-		try
-		{
 		switch(Options.getSize())
 		{
 		case x5:
@@ -79,11 +78,6 @@ public class CollageGenerator implements Runnable
 			return Create4x4();
 		case x3:
 			return Create3x3();
-		}
-		}
-		catch(Exception ex)
-		{
-			JOptionPane.showMessageDialog(null, "Error occurred while generating collage:\n" + ex.getMessage());
 		}
 		return null;
 	}
@@ -98,10 +92,19 @@ public class CollageGenerator implements Runnable
 		List<LastfmTopAlbum> pictures = new ArrayList<LastfmTopAlbum>();
 		for(int i = 0; i < 25; i++)
 		{
+			if(i > albumsAsArray.length -1)
+				break;
 			LastfmTopAlbum l = new LastfmTopAlbum();
 			l.setArtistName(albumsAsArray[i].getArtist());
 			l.setAlbumName(albumsAsArray[i].getName());
-			l.setAlbumCover(GetImageFromGoogle(l.getAlbumName() + " " + l.getArtistName()));
+			try
+			{
+				l.setAlbumCover(GetImageFromGoogle(l.getAlbumName() + " " + l.getArtistName()));
+			}
+			catch(Exception ex)
+			{
+				System.out.println("Non urgent: " + ex.getMessage());
+			}
 			pictures.add(l);
 		}
 		//////////////////////////////
