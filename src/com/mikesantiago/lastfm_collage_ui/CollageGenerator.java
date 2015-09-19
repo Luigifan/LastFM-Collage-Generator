@@ -1,7 +1,6 @@
 package com.mikesantiago.lastfm_collage_ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -12,11 +11,10 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
 import org.json.JSONObject;
 
@@ -82,11 +80,21 @@ public class CollageGenerator implements Runnable
 		return null;
 	}
 	
+	private Date getEarlierDateFromCurrent(int days)
+	{
+		Date dd = new Date();
+		dd.setTime(dd.getTime() + (long)days*1000*60*60*24);
+		return dd;
+	}
+	
 	//250x250 @ 1250x1250
 	private BufferedImage Create5x5()
 	{
+		Date now = new Date();
+		Date sevenDaysAgo = getEarlierDateFromCurrent(-7);
+		
 		//Get lastfm info
-		Chart<Album> albumChart = User.getWeeklyAlbumChart(Options.getUsername(), com.mikesantiago.lastfm_collage_generator.Program.APIKEY);
+		Chart<Album> albumChart = User.getWeeklyAlbumChart(Options.getUsername(), sevenDaysAgo.toString(), now.toString(), 25, com.mikesantiago.lastfm_collage_generator.Program.APIKEY);
 		Collection<Album> albums = albumChart.getEntries();
 		Album[] albumsAsArray = albums.toArray(new Album[albums.size()]);
 		List<LastfmTopAlbum> pictures = new ArrayList<LastfmTopAlbum>();
@@ -145,9 +153,11 @@ public class CollageGenerator implements Runnable
 	
 	//228x228 @ 1000x1000
 	private BufferedImage Create4x4()
-	{
-		//Get lastfm info
-				Chart<Album> albumChart = User.getWeeklyAlbumChart(Options.getUsername(), com.mikesantiago.lastfm_collage_generator.Program.APIKEY);
+	{Date now = new Date();
+	Date sevenDaysAgo = getEarlierDateFromCurrent(-7);
+	
+	//Get lastfm info
+	Chart<Album> albumChart = User.getWeeklyAlbumChart(Options.getUsername(), sevenDaysAgo.toString(), now.toString(), 16, com.mikesantiago.lastfm_collage_generator.Program.APIKEY);
 				Collection<Album> albums = albumChart.getEntries();
 				Album[] albumsAsArray = albums.toArray(new Album[albums.size()]);
 				List<LastfmTopAlbum> pictures = new ArrayList<LastfmTopAlbum>();
@@ -198,8 +208,10 @@ public class CollageGenerator implements Runnable
 	//300x300 @ 900x900
 	private BufferedImage Create3x3()
 	{
+		Date now = new Date();
+		Date sevenDaysAgo = getEarlierDateFromCurrent(-7);
 		//Get lastfm info
-		Chart<Album> albumChart = User.getWeeklyAlbumChart(Options.getUsername(), com.mikesantiago.lastfm_collage_generator.Program.APIKEY);
+		Chart<Album> albumChart = User.getWeeklyAlbumChart(Options.getUsername(), sevenDaysAgo.toString(), now.toString(), 9, com.mikesantiago.lastfm_collage_generator.Program.APIKEY);
 		Collection<Album> albums = albumChart.getEntries();
 		Album[] albumsAsArray = albums.toArray(new Album[albums.size()]);
 		List<LastfmTopAlbum> pictures = new ArrayList<LastfmTopAlbum>();
