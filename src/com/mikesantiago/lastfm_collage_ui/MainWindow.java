@@ -85,6 +85,8 @@ public class MainWindow extends JFrame {
 					{
 						Options.setFontForText(fontChooser.getSelectedFont());
 					}
+					else
+						chckbxNewCheckBox.setSelected(false);
 				}
 			}
 		});
