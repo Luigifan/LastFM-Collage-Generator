@@ -5,7 +5,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -43,25 +45,44 @@ public class CollageGenerator implements Runnable
 	{
 		String stripped = query.replaceAll("[\\-\\+\\.\\^:,\\]\\[]", "");
 		String request = URLEncoder.encode(stripped.toLowerCase());
-		try{
-            URL url = new URL("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + request);
-            URLConnection connection = url.openConnection();
+		//try{
+            URL url = null;
+			try {
+				url = new URL("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + request);
+			} catch (MalformedURLException e) {e.printStackTrace();}
+            URLConnection connection = null;
+			try {
+				connection = url.openConnection();
+			} catch (IOException e) {e.printStackTrace();}
 
             String line;
             StringBuilder builder = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
+            BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} catch (IOException e1) {e1.printStackTrace();}
+            try {
+				while((line = reader.readLine()) != null) {
+				    builder.append(line);
+				}
+			} catch (IOException e) {e.printStackTrace();}
 
             JSONObject json = new JSONObject(builder.toString());
-            	String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("url");
-            	BufferedImage image = ImageIO.read(new URL(imageUrl));
-            	return image;
-        } catch(Exception e){
+            //String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("url");
+            for(Object j : json.getJSONObject("responseData").getJSONArray("results"))
+            {
+            	JSONObject asJObj = (JSONObject)j;
+            	try
+            	{
+            		BufferedImage image = ImageIO.read(new URL(asJObj.getString("url")));
+            		return image;
+            	}
+            	catch(Exception ex){continue;}
+            }
+        /*} catch(Exception e){
         	System.err.println("---ERROR GETTING FOR QUERY: " + stripped.toLowerCase());
             e.printStackTrace();
-        }
+        }*/
 		return null;
 	}
 	
